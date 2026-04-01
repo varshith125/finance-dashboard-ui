@@ -9,10 +9,13 @@ export default defineConfig({
     chunkSizeWarningLimit: 1000,
     rollupOptions: {
       output: {
-        manualChunks: {
-          react: ['react', 'react-dom'],
-          recharts: ['recharts'],
-          lucide: ['lucide-react']
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('recharts') || id.includes('d3')) return 'recharts';
+            if (id.includes('lucide-react')) return 'lucide';
+            if (id.includes('react') || id.includes('react-dom')) return 'react';
+            return 'vendor';
+          }
         }
       }
     }
