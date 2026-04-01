@@ -18,7 +18,7 @@ export default function Header({ page, onMenuOpen }) {
     const filtered = applyFilters(transactions, filters, sorting);
     const header = 'Date,Description,Category,Type,Amount\n';
     const rows = filtered
-      .map((t) => `${t.date},"${t.description}",${t.category},${t.type},${t.amount}`)
+      .map((t) => `"${formatDate(t.date)}","${t.description}",${t.category},${t.type},${t.amount}`)
       .join('\n');
     const blob = new Blob([header + rows], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
