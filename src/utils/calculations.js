@@ -22,11 +22,20 @@ export const forMonth = (transactions, yearMonth) =>
 
 // Build last-N-months trend data for the area chart
 export const buildTrendData = (transactions, monthsBack = 6) => {
-  const now = new Date();
+  const monthsArr = [...new Set(transactions.map((t) => getYearMonth(t.date)))].sort();
+  const latestYM = monthsArr[monthsArr.length - 1];
+  
+  // Use the latest data month as "now", default to system clock if empty
+  let baseDate = new Date();
+  if (latestYM) {
+    const [y, m] = latestYM.split('-');
+    baseDate = new Date(parseInt(y), parseInt(m) - 1, 1);
+  }
+
   const months = [];
 
   for (let i = monthsBack - 1; i >= 0; i--) {
-    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const d = new Date(baseDate.getFullYear(), baseDate.getMonth() - i, 1);
     const ym = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
     const label = d.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
     const group = forMonth(transactions, ym);
