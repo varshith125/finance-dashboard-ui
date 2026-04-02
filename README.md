@@ -220,7 +220,7 @@ Given more time, here is what I would build on top of this:
 
 ##  About
 
-Built by [Your Name] as part of a frontend evaluation project.  
+Built by venkata varshith as part of a frontend evaluation project.  
 Feel free to reach out: [varshith6066@gmail.com] · [www.linkedin.com/in/venkata-varshith-82b2542a5] · [https://github.com/varshith125/finance-dashboard-ui.git]
 
 ---
