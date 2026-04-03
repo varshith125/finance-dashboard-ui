@@ -72,7 +72,7 @@ const useFinanceStore = create(
     {
       name: 'finance-dashboard-state',
       // Only persist role and dark mode preference; transactions reset to mock on reload
-      partializes: (state) => ({
+      partialize: (state) => ({
         role: state.role,
         darkMode: state.darkMode,
       }),
