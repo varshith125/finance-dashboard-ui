@@ -147,7 +147,7 @@ export const applyFilters = (transactions, filters, sorting) => {
     result = result.filter((t) => t.date <= filters.dateTo);
   }
 
-  // Sorting
+  // Sorting – fully deterministic to keep pagination stable
   result.sort((a, b) => {
     let valA, valB;
     if (sorting.field === 'date') {
@@ -157,12 +157,22 @@ export const applyFilters = (transactions, filters, sorting) => {
       valA = a.amount;
       valB = b.amount;
     } else if (sorting.field === 'category') {
-      valA = a.category;
-      valB = b.category;
+      valA = a.category.toLowerCase();
+      valB = b.category.toLowerCase();
     }
+
+    // Primary comparison
     if (valA < valB) return sorting.direction === 'asc' ? -1 : 1;
     if (valA > valB) return sorting.direction === 'asc' ? 1 : -1;
-    return 0;
+
+    // Secondary: when sorting by amount or category, break ties by date (newest first)
+    if (sorting.field !== 'date') {
+      if (a.date > b.date) return -1;
+      if (a.date < b.date) return 1;
+    }
+
+    // Tertiary: break remaining ties by id (numeric ascending) for full determinism
+    return Number(a.id) - Number(b.id);
   });
 
   return result;
