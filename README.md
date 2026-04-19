@@ -1,20 +1,21 @@
 # FinTrack — Personal Finance Dashboard
 
-> A clean, interactive finance dashboard to track income, expenses, and spending patterns — built as part of a frontend evaluation project.
+> A clean, interactive finance dashboard to track income, expenses, and spending patterns — built with React + TypeScript as part of a frontend evaluation project.
 
-![React](https://img.shields.io/badge/React-18-61dafb?style=flat&logo=react)
-![Vite](https://img.shields.io/badge/Vite-5-646cff?style=flat&logo=vite)
-![Recharts](https://img.shields.io/badge/Recharts-2-22b5bf?style=flat)
-![Zustand](https://img.shields.io/badge/Zustand-4-orange?style=flat)
-![CSS](https://img.shields.io/badge/Styling-Vanilla%20CSS-blue?style=flat)
+![React](https://img.shields.io/badge/React-19-61dafb?style=flat&logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-Strict-3178c6?style=flat&logo=typescript)
+![Vite](https://img.shields.io/badge/Vite-8-646cff?style=flat&logo=vite)
+![Recharts](https://img.shields.io/badge/Recharts-3-22b5bf?style=flat)
+![Zustand](https://img.shields.io/badge/Zustand-5-orange?style=flat)
+![TailwindCSS](https://img.shields.io/badge/Tailwind-4-06b6d4?style=flat&logo=tailwindcss)
 
 ---
 
 ##  About the Project
 
-I built FinTrack for my frontend evaluation assignment. As a fresher, my goal was to demonstrate my understanding of React, component structure, and state management while building an interface that looks clean and feels interactive.
+I built FinTrack for my frontend evaluation assignment. As a fresher, my goal was to demonstrate my understanding of React, TypeScript, component architecture, and state management while building an interface that looks clean and feels interactive.
 
-I wanted to challenge myself to write clean code without relying heavily on massive libraries. For example, instead of using a UI component library (like MUI or Bootstrap), I built the styling from scratch using Vanilla CSS to showcase my fundamental CSS skills.
+The project is fully written in **TypeScript with strict mode** enabled, providing complete type safety across the entire codebase — from the Zustand store to every component prop interface.
 
 ---
 
@@ -23,8 +24,8 @@ I wanted to challenge myself to write clean code without relying heavily on mass
 > Run it locally in under a minute:
 
 ```bash
-git clone <your-repo-url>
-cd fintrack
+git clone https://github.com/varshith125/finance-dashboard-ui.git
+cd finance-dashboard-ui
 npm install
 npm run dev
 ```
@@ -37,13 +38,56 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 
 | Technology | Version | Why I chose it |
 |---|---|---|
-| **React** | 18 | Component model is ideal for data-driven dashboards |
-| **Vite** | 5 | Starts in ~500ms, excellent HMR for fast iteration |
-| **Zustand** | 4 | Lightweight global state without Redux boilerplate |
-| **Recharts** | 2 | React-native chart library, composable with JSX |
+| **React** | 19 | Component model is ideal for data-driven dashboards |
+| **TypeScript** | 5 (strict) | Compile-time type safety, better IDE support, and self-documenting code |
+| **Vite** | 8 | Starts in ~300ms, excellent HMR for fast iteration |
+| **Zustand** | 5 | Lightweight global state without Redux boilerplate, fully typed with generics |
+| **Recharts** | 3 | React-native chart library, composable with JSX |
 | **Lucide React** | latest | Clean, consistent icon set with tree-shakeable imports |
-| **Vanilla CSS** | — | Full control over design system without framework overhead |
+| **Tailwind CSS** | 4 | Utility-first styling with Vite plugin integration |
 | **Google Fonts** | — | Inter — modern, readable, and professional |
+
+---
+
+## TypeScript Architecture
+
+The project uses a **centralized type system** with strict TypeScript configuration:
+
+### Type Definitions (`src/types/index.ts`)
+
+```typescript
+// Union types for type-safe literals
+type TransactionType = 'income' | 'expense'
+type Category = 'Food' | 'Transport' | 'Entertainment' | ... | 'Other'
+type Role = 'viewer' | 'admin'
+type SortField = 'date' | 'amount' | 'category'
+type PageId = 'dashboard' | 'transactions' | 'insights'
+
+// Core data interface
+interface Transaction {
+  id: string;
+  date: string;
+  amount: number;
+  category: Category;
+  type: TransactionType;
+  description: string;
+}
+
+// Fully typed Zustand store
+interface FinanceState {
+  transactions: Transaction[];
+  filters: Filters;
+  sorting: Sorting;
+  // ... all actions with typed signatures
+}
+```
+
+### Type Safety Highlights
+- **Zustand store** typed with `create<FinanceState>()` generic — every action and state field is type-checked
+- **Component props** use explicit interfaces (`SidebarProps`, `HeaderProps`, `SummaryCardProps`, etc.)
+- **Utility functions** have full parameter and return type annotations
+- **No `any` types** anywhere in the codebase
+- **Strict mode** enabled — `noUnusedLocals`, `noUnusedParameters`, `noFallthroughCasesInSwitch`
 
 ---
 
@@ -100,41 +144,45 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 ```
 src/
 │
+├── types/
+│   └── index.ts                 # Centralized type definitions (10 types, 9 interfaces)
+│
 ├── data/
-│   └── mockData.js              # 35+ mock transactions (Jan–Mar), category colors
+│   └── mockData.ts              # 35+ typed mock transactions (Jan–Mar), category colors
 │
 ├── utils/
-│   ├── formatters.js            # formatCurrency, formatDate, getYearMonth
-│   └── calculations.js         # Pure functions — filtering, chart data, insights
+│   ├── formatters.ts            # formatCurrency, formatDate, getYearMonth (fully typed)
+│   └── calculations.ts          # Pure typed functions — filtering, chart data, insights
 │
 ├── store/
-│   └── useFinanceStore.js       # Zustand store — single source of truth
+│   └── useFinanceStore.ts       # Zustand store with FinanceState generic
 │
 ├── components/
 │   ├── layout/
-│   │   ├── Sidebar.jsx          # Navigation, mobile drawer
-│   │   └── Header.jsx           # Role switcher, badge, dark mode, export
+│   │   ├── Sidebar.tsx          # Navigation, mobile drawer (SidebarProps)
+│   │   └── Header.tsx           # Role switcher, badge, dark mode, export (HeaderProps)
 │   │
 │   ├── dashboard/
-│   │   ├── SummaryCards.jsx     # Balance, Income, Expenses cards
-│   │   ├── TrendChart.jsx       # Recharts AreaChart (6-month trend)
-│   │   └── CategoryChart.jsx   # Recharts PieChart (donut)
+│   │   ├── SummaryCards.tsx     # Balance, Income, Expenses cards (SummaryCardProps)
+│   │   ├── TrendChart.tsx       # Recharts AreaChart — 6-month trend (TrendChartProps)
+│   │   └── CategoryChart.tsx   # Recharts PieChart — donut (CategoryChartProps)
 │   │
 │   ├── transactions/
-│   │   ├── TransactionFilters.jsx  # All filter controls
-│   │   ├── TransactionTable.jsx    # Table, sorting, pagination, CRUD
-│   │   └── AddEditModal.jsx        # Add/Edit form with validation
+│   │   ├── TransactionFilters.tsx  # All filter controls with typed handlers
+│   │   ├── TransactionTable.tsx    # Table, sorting, pagination, CRUD
+│   │   └── AddEditModal.tsx        # Add/Edit form with typed FormData & validation
 │   │
 │   ├── insights/
-│   │   └── InsightsPanel.jsx    # 4 insight cards
+│   │   └── InsightsPanel.tsx    # 4 insight cards (InsightCardProps)
 │   │
 │   └── pages/
-│       ├── DashboardPage.jsx    # Composes Dashboard view
-│       ├── TransactionsPage.jsx # Composes Transactions view
-│       └── InsightsPage.jsx     # Insights + category breakdown table
+│       ├── DashboardPage.tsx    # Composes Dashboard view
+│       ├── TransactionsPage.tsx # Composes Transactions view
+│       └── InsightsPage.tsx     # Insights + category breakdown table
 │
-├── App.jsx                      # Page routing, dark mode class, sidebar state
-├── main.jsx                     # React entry point
+├── App.tsx                      # Page routing, dark mode class, sidebar state
+├── main.tsx                     # React entry point
+├── vite-env.d.ts                # Vite client type declarations
 └── index.css                    # Complete CSS design system
 ```
 
@@ -142,44 +190,60 @@ src/
 
 ##  Architecture Decisions
 
+### Why TypeScript with Strict Mode?
+
+TypeScript catches bugs at compile time that would otherwise surface as runtime errors. With strict mode enabled, every function parameter, return value, and variable is type-checked. This made refactoring fearless and the codebase self-documenting — hovering over any function or component prop immediately shows its type contract.
+
 ### Why Zustand over Context or Redux?
 
-Redux felt like overkill for a project of this scope, and Context API can sometimes cause unnecessary re-renders when state changes. Zustand was easy to learn, requires very little boilerplate, and let me keep the state clean while easily adding localStorage persistence.
+Redux felt like overkill for a project of this scope, and Context API can sometimes cause unnecessary re-renders when state changes. Zustand was easy to learn, requires very little boilerplate, and with TypeScript's `create<FinanceState>()` generic, the entire store is fully type-safe.
 
 ### Why pure functions for data logic?
 
-I learned that keeping business logic—like filtering, sorting, and math—outside of React components makes the code much easier to read and test. By placing this logic in `calculations.js`, the store stays lean, and the components just render the data they are given.
+I learned that keeping business logic—like filtering, sorting, and math—outside of React components makes the code much easier to read and test. By placing this logic in `calculations.ts`, the store stays lean, and the components just render the data they are given. TypeScript's function signatures serve as built-in documentation.
 
-### Why hand-written CSS?
+### Why hand-written CSS + Tailwind?
 
-While tools like Tailwind or Material UI are great, I wanted to show my fundamental CSS skills. Building the design system from scratch using CSS custom properties (variables), flexbox, and grid helped me deepen my understanding of how modern layouts and responsive breakpoints work under the hood.
+The project uses a combination of Tailwind CSS utilities and a custom CSS design system with CSS custom properties (variables). This gives the flexibility of utility classes while maintaining full control over the design tokens (colors, spacing, typography).
 
 ---
 
 ##  State Flow
 
 ```
-useFinanceStore (Zustand)
+useFinanceStore (Zustand — typed with FinanceState)
 │
-├── transactions[]     ← Source of truth for all data
-├── filters {}         ← search, type, categories, dateFrom, dateTo
-├── sorting {}         ← field, direction
-├── role               ← 'viewer' | 'admin'
-└── darkMode           ← boolean
+├── transactions: Transaction[]   ← Source of truth for all data
+├── filters: Filters              ← search, type, categories, dateFrom, dateTo
+├── sorting: Sorting              ← field, direction
+├── role: Role                    ← 'viewer' | 'admin'
+└── darkMode: boolean
 
-     ↓ computed at render time by calculations.js
+     ↓ computed at render time by calculations.ts
 
-applyFilters(transactions, filters, sorting)
+applyFilters(transactions, filters, sorting): Transaction[]
    → filtered[]  →  TransactionTable, InsightsPanel, InsightsPage
 
-buildTrendData(transactions)
+buildTrendData(transactions): TrendDataPoint[]
    → months[]    →  TrendChart
 
-buildCategoryData(transactions)
+buildCategoryData(transactions): CategoryDataPoint[]
    → categories[]  →  CategoryChart, InsightsPage
 ```
 
 Every time a filter changes or a transaction is added/edited/deleted, every component that reads from the store re-renders automatically with fresh derived data.
+
+---
+
+##  Available Scripts
+
+```bash
+npm run dev          # Start development server (http://localhost:5173)
+npm run build        # Type-check + production build (tsc -b && vite build)
+npm run preview      # Preview production build
+npm run type-check   # Run TypeScript type-checking without emitting
+npm run lint         # Run ESLint across .ts/.tsx/.js/.jsx files
+```
 
 ---
 
@@ -212,7 +276,7 @@ Given more time, here is what I would build on top of this:
 1. **Budget planning** — Set monthly limits per category, show progress bars against them on the dashboard
 2. **Real API integration** — The store's `addTransaction`, `editTransaction`, `deleteTransaction` actions are already structured for a clean swap to API calls
 3. **Authentication** — The role system is already built; connecting it to a login flow (e.g., JWT claims setting the role) would take minimal changes
-4. **Unit tests** — `calculations.js` is pure functions with no side effects — ideal for Vitest unit tests with zero mocking needed
+4. **Unit tests** — `calculations.ts` is pure functions with no side effects — ideal for Vitest unit tests with zero mocking needed
 5. **Recurring transactions** — Flag a transaction as recurring and auto-generate it monthly
 6. **Notifications** — Alert when a category exceeds its budget limit
 
