@@ -1,8 +1,8 @@
-import useFinanceStore from '../../store/useFinanceStore';
-import SummaryCards from '../dashboard/SummaryCards';
-import TrendChart from '../dashboard/TrendChart';
-import CategoryChart from '../dashboard/CategoryChart';
-import InsightsPanel from '../insights/InsightsPanel';
+import useFinanceStore from '../../store/useFinanceStore.ts';
+import SummaryCards from '../dashboard/SummaryCards.tsx';
+import TrendChart from '../dashboard/TrendChart.tsx';
+import CategoryChart from '../dashboard/CategoryChart.tsx';
+import InsightsPanel from '../insights/InsightsPanel.tsx';
 
 export default function DashboardPage() {
   const { transactions } = useFinanceStore();

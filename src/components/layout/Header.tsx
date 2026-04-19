@@ -1,15 +1,22 @@
+import { type ChangeEvent } from 'react';
 import { Moon, Sun, Shield, Eye, Menu, Download } from 'lucide-react';
-import useFinanceStore from '../../store/useFinanceStore';
-import { applyFilters } from '../../utils/calculations';
-import { formatDate } from '../../utils/formatters';
+import useFinanceStore from '../../store/useFinanceStore.ts';
+import { applyFilters } from '../../utils/calculations.ts';
+import { formatDate } from '../../utils/formatters.ts';
+import type { PageId, Role } from '../../types/index.ts';
 
-const PAGE_TITLES = {
+const PAGE_TITLES: Record<PageId, { title: string; subtitle: string }> = {
   dashboard:    { title: 'Dashboard',    subtitle: 'Your financial overview' },
   transactions: { title: 'Transactions', subtitle: 'Track every transaction' },
   insights:     { title: 'Insights',     subtitle: 'Understand your spending' },
 };
 
-export default function Header({ page, onMenuOpen }) {
+interface HeaderProps {
+  page: PageId;
+  onMenuOpen: () => void;
+}
+
+export default function Header({ page, onMenuOpen }: HeaderProps) {
   const { role, setRole, darkMode, toggleDarkMode, transactions, filters, sorting } = useFinanceStore();
   const { title, subtitle } = PAGE_TITLES[page] || PAGE_TITLES.dashboard;
 
@@ -53,7 +60,7 @@ export default function Header({ page, onMenuOpen }) {
         <select
           className="role-selector"
           value={role}
-          onChange={(e) => setRole(e.target.value)}
+          onChange={(e: ChangeEvent<HTMLSelectElement>) => setRole(e.target.value as Role)}
           id="role-selector"
         >
           <option value="viewer">👁 Viewer</option>

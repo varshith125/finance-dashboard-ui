@@ -1,8 +1,9 @@
-import InsightsPanel from '../insights/InsightsPanel';
-import useFinanceStore from '../../store/useFinanceStore';
-import { applyFilters, buildCategoryData } from '../../utils/calculations';
-import { formatCurrency } from '../../utils/formatters';
-import { CATEGORY_COLORS } from '../../data/mockData';
+import InsightsPanel from '../insights/InsightsPanel.tsx';
+import useFinanceStore from '../../store/useFinanceStore.ts';
+import { applyFilters, buildCategoryData } from '../../utils/calculations.ts';
+import { formatCurrency } from '../../utils/formatters.ts';
+import { CATEGORY_COLORS } from '../../data/mockData.ts';
+import type { Category } from '../../types/index.ts';
 
 export default function InsightsPage() {
   const { transactions, filters, sorting } = useFinanceStore();
@@ -43,7 +44,7 @@ export default function InsightsPage() {
                   const total = categoryData.reduce((s, c) => s + c.value, 0);
                   return categoryData.map((cat) => {
                     const pct = total > 0 ? (cat.value / total) * 100 : 0;
-                    const color = CATEGORY_COLORS[cat.name] || '#8b92b3';
+                    const color = CATEGORY_COLORS[cat.name as Category] || '#8b92b3';
                     return (
                       <tr key={cat.name}>
                         <td>

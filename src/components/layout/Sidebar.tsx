@@ -1,12 +1,26 @@
-import { LayoutDashboard, ArrowLeftRight, Lightbulb, Menu, X } from 'lucide-react';
+import { LayoutDashboard, ArrowLeftRight, Lightbulb, X, type LucideIcon } from 'lucide-react';
+import type { PageId } from '../../types/index.ts';
 
-const NAV_ITEMS = [
+interface NavItem {
+  id: PageId;
+  label: string;
+  icon: LucideIcon;
+}
+
+const NAV_ITEMS: NavItem[] = [
   { id: 'dashboard',    label: 'Dashboard',    icon: LayoutDashboard },
   { id: 'transactions', label: 'Transactions', icon: ArrowLeftRight },
   { id: 'insights',     label: 'Insights',     icon: Lightbulb },
 ];
 
-export default function Sidebar({ active, onNavigate, open, onClose }) {
+interface SidebarProps {
+  active: PageId;
+  onNavigate: (page: PageId) => void;
+  open: boolean;
+  onClose: () => void;
+}
+
+export default function Sidebar({ active, onNavigate, open, onClose }: SidebarProps) {
   return (
     <>
       {/* Overlay for mobile */}

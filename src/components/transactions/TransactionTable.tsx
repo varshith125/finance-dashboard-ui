@@ -1,15 +1,20 @@
 import { useState } from 'react';
 import { Pencil, Trash2, Plus, ChevronLeft, ChevronRight } from 'lucide-react';
-import useFinanceStore from '../../store/useFinanceStore';
-import { applyFilters } from '../../utils/calculations';
-import { formatCurrency, formatDate } from '../../utils/formatters';
-import TransactionFilters from './TransactionFilters';
-import AddEditModal from './AddEditModal';
-import { CATEGORY_COLORS } from '../../data/mockData';
+import useFinanceStore from '../../store/useFinanceStore.ts';
+import { applyFilters } from '../../utils/calculations.ts';
+import { formatCurrency, formatDate } from '../../utils/formatters.ts';
+import TransactionFilters from './TransactionFilters.tsx';
+import AddEditModal from './AddEditModal.tsx';
+import { CATEGORY_COLORS } from '../../data/mockData.ts';
+import type { Transaction, Category, SortField } from '../../types/index.ts';
 
 const PAGE_SIZE = 10;
 
-function CategoryDot({ category }) {
+interface CategoryDotProps {
+  category: Category;
+}
+
+function CategoryDot({ category }: CategoryDotProps) {
   return (
     <span
       style={{
@@ -26,7 +31,7 @@ function CategoryDot({ category }) {
 
 export default function TransactionTable() {
   const { transactions, filters, sorting, role, deleteTransaction, setSorting } = useFinanceStore();
-  const [modal, setModal] = useState(null); // null | 'add' | { ...transaction }
+  const [modal, setModal] = useState<null | 'add' | Transaction>(null);
   const [page, setPage] = useState(1);
 
   const filtered = applyFilters(transactions, filters, sorting);
@@ -36,21 +41,21 @@ export default function TransactionTable() {
   const isAdmin = role === 'admin';
 
   const openAdd = () => setModal('add');
-  const openEdit = (tx) => setModal(tx);
+  const openEdit = (tx: Transaction) => setModal(tx);
   const closeModal = () => setModal(null);
 
-  const handleDelete = (id) => {
+  const handleDelete = (id: string) => {
     if (window.confirm('Delete this transaction?')) {
       deleteTransaction(id);
     }
   };
 
-  const handleSort = (field) => {
+  const handleSort = (field: SortField) => {
     setSorting(field);
     setPage(1);
   };
 
-  const SortHeader = ({ field, label }) => {
+  const SortHeader = ({ field, label }: { field: SortField; label: string }) => {
     const isActive = sorting.field === field;
     return (
       <th onClick={() => handleSort(field)} id={`sort-header-${field}`}>
@@ -177,8 +182,8 @@ export default function TransactionTable() {
               </button>
               {Array.from({ length: totalPages }, (_, i) => i + 1)
                 .filter((p) => p === 1 || p === totalPages || Math.abs(p - page) <= 1)
-                .reduce((acc, p, i, arr) => {
-                  if (i > 0 && p - arr[i - 1] > 1) acc.push('…');
+                .reduce<(number | string)[]>((acc, p, i, arr) => {
+                  if (i > 0 && p - (arr[i - 1] as number) > 1) acc.push('…');
                   acc.push(p);
                   return acc;
                 }, [])
@@ -189,7 +194,7 @@ export default function TransactionTable() {
                     <button
                       key={p}
                       className={`page-btn ${page === p ? 'active' : ''}`}
-                      onClick={() => setPage(p)}
+                      onClick={() => setPage(p as number)}
                       id={`page-${p}`}
                     >
                       {p}

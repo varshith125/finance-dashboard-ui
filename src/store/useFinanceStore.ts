@@ -1,10 +1,11 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import mockTransactions from '../data/mockData';
+import mockTransactions from '../data/mockData.ts';
+import type { FinanceState } from '../types/index.ts';
 
-const useFinanceStore = create(
+const useFinanceStore = create<FinanceState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       // ── State ───────────────────────────────────────────
       transactions: mockTransactions,
       role: 'viewer', // 'viewer' | 'admin'

@@ -1,13 +1,14 @@
 import { Search, X, ChevronDown, ChevronUp } from 'lucide-react';
-import useFinanceStore from '../../store/useFinanceStore';
-import { CATEGORIES } from '../../data/mockData';
-import { useState } from 'react';
+import useFinanceStore from '../../store/useFinanceStore.ts';
+import { CATEGORIES } from '../../data/mockData.ts';
+import { useState, type MouseEvent as ReactMouseEvent } from 'react';
+import type { Category, SortField } from '../../types/index.ts';
 
 export default function TransactionFilters() {
   const { filters, setFilter, resetFilters, sorting, setSorting } = useFinanceStore();
   const [categoryOpen, setCategoryOpen] = useState(false);
 
-  const toggleCategory = (cat) => {
+  const toggleCategory = (cat: Category) => {
     const current = filters.categories;
     const next = current.includes(cat)
       ? current.filter((c) => c !== cat)
@@ -15,7 +16,7 @@ export default function TransactionFilters() {
     setFilter('categories', next);
   };
 
-  const removeCategory = (cat) => {
+  const removeCategory = (cat: Category) => {
     setFilter('categories', filters.categories.filter((c) => c !== cat));
   };
 
@@ -49,7 +50,7 @@ export default function TransactionFilters() {
       <div className="filter-group">
         <label className="filter-label">Type</label>
         <div className="type-toggle">
-          {['all', 'income', 'expense'].map((t) => (
+          {(['all', 'income', 'expense'] as const).map((t) => (
             <button
               key={t}
               className={`type-btn ${filters.type === t ? 'active' : ''}`}
@@ -132,8 +133,8 @@ export default function TransactionFilters() {
                   color: 'var(--text-secondary)',
                   transition: 'background 0.1s',
                 }}
-                onMouseEnter={(e) => e.currentTarget.style.background = 'var(--bg-card-hover)'}
-                onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                onMouseEnter={(e: ReactMouseEvent<HTMLLabelElement>) => (e.currentTarget.style.background = 'var(--bg-card-hover)')}
+                onMouseLeave={(e: ReactMouseEvent<HTMLLabelElement>) => (e.currentTarget.style.background = 'transparent')}
               >
                 <input
                   type="checkbox"
@@ -152,7 +153,7 @@ export default function TransactionFilters() {
       <div className="filter-group">
         <label className="filter-label">Sort by</label>
         <div style={{ display: 'flex', gap: 5 }}>
-          {['date', 'amount', 'category'].map((field) => (
+          {(['date', 'amount', 'category'] as SortField[]).map((field) => (
             <button
               key={field}
               className={`btn btn-secondary btn-sm ${sorting.field === field ? 'active' : ''}`}

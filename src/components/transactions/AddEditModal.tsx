@@ -1,9 +1,18 @@
-import { useState } from 'react';
+import { useState, type FormEvent } from 'react';
 import { X } from 'lucide-react';
-import useFinanceStore from '../../store/useFinanceStore';
-import { CATEGORIES } from '../../data/mockData';
+import useFinanceStore from '../../store/useFinanceStore.ts';
+import { CATEGORIES } from '../../data/mockData.ts';
+import type { Transaction, Category, TransactionType } from '../../types/index.ts';
 
-const EMPTY_FORM = {
+interface FormData {
+  date: string;
+  amount: string;
+  category: Category;
+  type: TransactionType;
+  description: string;
+}
+
+const EMPTY_FORM: FormData = {
   date: new Date().toISOString().slice(0, 10),
   amount: '',
   category: 'Food',
@@ -11,24 +20,29 @@ const EMPTY_FORM = {
   description: '',
 };
 
-export default function AddEditModal({ transaction, onClose }) {
+interface AddEditModalProps {
+  transaction: Transaction | null;
+  onClose: () => void;
+}
+
+export default function AddEditModal({ transaction, onClose }: AddEditModalProps) {
   const { addTransaction, editTransaction } = useFinanceStore();
   const isEdit = Boolean(transaction);
 
-  const [form, setForm] = useState(
-    isEdit
+  const [form, setForm] = useState<FormData>(
+    isEdit && transaction
       ? { ...transaction, amount: String(transaction.amount) }
       : EMPTY_FORM
   );
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
 
-  const set = (key, value) => {
+  const set = (key: keyof FormData, value: string) => {
     setForm((f) => ({ ...f, [key]: value }));
     setErrors((e) => ({ ...e, [key]: '' }));
   };
 
-  const validate = () => {
-    const errs = {};
+  const validate = (): Partial<Record<keyof FormData, string>> => {
+    const errs: Partial<Record<keyof FormData, string>> = {};
     if (!form.date) errs.date = 'Date is required';
     if (!form.amount || isNaN(Number(form.amount)) || Number(form.amount) <= 0)
       errs.amount = 'Enter a valid positive amount';
@@ -36,13 +50,13 @@ export default function AddEditModal({ transaction, onClose }) {
     return errs;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     const errs = validate();
     if (Object.keys(errs).length) { setErrors(errs); return; }
 
     const payload = { ...form, amount: Number(form.amount) };
-    if (isEdit) {
+    if (isEdit && transaction) {
       editTransaction(transaction.id, payload);
     } else {
       addTransaction(payload);

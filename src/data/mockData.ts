@@ -1,9 +1,17 @@
+import type { Transaction, Category, TransactionType } from '../types/index.ts';
+
 // 35 mock transactions spanning Jan–Mar 2025
 // Categories: Food, Transport, Salary, Entertainment, Utilities, Health, Freelance, Shopping, Investment
 
 let idCounter = 1;
 
-const t = (date, amount, category, type, description) => ({
+const t = (
+  date: string,
+  amount: number,
+  category: Category,
+  type: TransactionType,
+  description: string
+): Transaction => ({
   id: String(idCounter++),
   date,
   amount,
@@ -12,7 +20,7 @@ const t = (date, amount, category, type, description) => ({
   description,
 });
 
-export const CATEGORIES = [
+export const CATEGORIES: Category[] = [
   'Food',
   'Transport',
   'Entertainment',
@@ -25,7 +33,7 @@ export const CATEGORIES = [
   'Other',
 ];
 
-export const CATEGORY_COLORS = {
+export const CATEGORY_COLORS: Record<Category, string> = {
   Food:          '#6366f1',
   Transport:     '#22d3a8',
   Entertainment: '#f59e0b',
@@ -38,7 +46,7 @@ export const CATEGORY_COLORS = {
   Other:         '#8b92b3',
 };
 
-const mockTransactions = [
+const mockTransactions: Transaction[] = [
   // ── January 2025 ─────────────────────────────────────
   t('2025-01-02', 4500, 'Salary',        'income',  'Monthly salary - January'),
   t('2025-01-03', 850,  'Freelance',     'income',  'Web design project'),

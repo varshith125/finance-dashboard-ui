@@ -8,10 +8,22 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
-import { buildTrendData } from '../../utils/calculations';
-import { formatCurrency } from '../../utils/formatters';
+import { buildTrendData } from '../../utils/calculations.ts';
+import { formatCurrency } from '../../utils/formatters.ts';
+import type { Transaction } from '../../types/index.ts';
 
-function CustomTooltip({ active, payload, label }) {
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: Array<{
+    dataKey: string;
+    name: string;
+    value: number;
+    color: string;
+  }>;
+  label?: string;
+}
+
+function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
   if (!active || !payload?.length) return null;
   return (
     <div className="custom-tooltip">
@@ -29,7 +41,11 @@ function CustomTooltip({ active, payload, label }) {
   );
 }
 
-export default function TrendChart({ transactions }) {
+interface TrendChartProps {
+  transactions: Transaction[];
+}
+
+export default function TrendChart({ transactions }: TrendChartProps) {
   const data = buildTrendData(transactions, 6);
   const hasData = data.some((d) => d.income > 0 || d.expenses > 0);
 
@@ -68,7 +84,7 @@ export default function TrendChart({ transactions }) {
               tick={{ fontSize: 11, fill: 'var(--text-muted)' }}
               axisLine={false}
               tickLine={false}
-              tickFormatter={(v) => `$${v >= 1000 ? `${(v/1000).toFixed(0)}k` : v}`}
+              tickFormatter={(v: number) => `$${v >= 1000 ? `${(v/1000).toFixed(0)}k` : v}`}
             />
             <Tooltip content={<CustomTooltip />} />
             <Legend

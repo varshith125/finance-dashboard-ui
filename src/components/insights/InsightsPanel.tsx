@@ -1,17 +1,26 @@
 import {
-  Tag, TrendingDown, TrendingUp, PiggyBank, Zap,
+  Tag, TrendingDown, TrendingUp, PiggyBank, Zap, type LucideIcon,
 } from 'lucide-react';
-import useFinanceStore from '../../store/useFinanceStore';
-import { applyFilters } from '../../utils/calculations';
+import useFinanceStore from '../../store/useFinanceStore.ts';
+import { applyFilters } from '../../utils/calculations.ts';
 import {
   highestSpendingCategory,
   momExpenseChange,
   savingsRate,
   avgMonthlySpending,
-} from '../../utils/calculations';
-import { formatCurrency } from '../../utils/formatters';
+} from '../../utils/calculations.ts';
+import { formatCurrency } from '../../utils/formatters.ts';
 
-function InsightCard({ icon: Icon, iconBg, iconColor, label, value, desc }) {
+interface InsightCardProps {
+  icon: LucideIcon;
+  iconBg: string;
+  iconColor: string;
+  label: string;
+  value: string;
+  desc: string;
+}
+
+function InsightCard({ icon: Icon, iconBg, iconColor, label, value, desc }: InsightCardProps) {
   return (
     <div className="insight-card animate-slide-up">
       <div className="insight-icon" style={{ background: iconBg, color: iconColor }}>

@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
-import useFinanceStore from './store/useFinanceStore';
-import Sidebar from './components/layout/Sidebar';
-import Header from './components/layout/Header';
-import DashboardPage from './components/pages/DashboardPage';
-import TransactionsPage from './components/pages/TransactionsPage';
-import InsightsPage from './components/pages/InsightsPage';
+import useFinanceStore from './store/useFinanceStore.ts';
+import Sidebar from './components/layout/Sidebar.tsx';
+import Header from './components/layout/Header.tsx';
+import DashboardPage from './components/pages/DashboardPage.tsx';
+import TransactionsPage from './components/pages/TransactionsPage.tsx';
+import InsightsPage from './components/pages/InsightsPage.tsx';
+import type { PageId } from './types/index.ts';
 
 export default function App() {
   const { darkMode } = useFinanceStore();
-  const [page, setPage] = useState('dashboard');
+  const [page, setPage] = useState<PageId>('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Apply dark/light class to root

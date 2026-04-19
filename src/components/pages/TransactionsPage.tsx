@@ -1,4 +1,4 @@
-import TransactionTable from '../transactions/TransactionTable';
+import TransactionTable from '../transactions/TransactionTable.tsx';
 
 export default function TransactionsPage() {
   return (

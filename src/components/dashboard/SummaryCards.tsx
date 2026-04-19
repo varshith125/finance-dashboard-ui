@@ -1,14 +1,15 @@
-import { Wallet, TrendingUp, TrendingDown, ArrowUpRight, ArrowDownRight } from 'lucide-react';
-import { formatCurrency } from '../../utils/formatters';
+import { Wallet, TrendingUp, TrendingDown, ArrowUpRight, ArrowDownRight, type LucideIcon } from 'lucide-react';
+import { formatCurrency } from '../../utils/formatters.ts';
 import {
   totalIncome,
   totalExpenses,
   netBalance,
   forMonth,
-} from '../../utils/calculations';
-import { getYearMonth } from '../../utils/formatters';
+} from '../../utils/calculations.ts';
+import { getYearMonth } from '../../utils/formatters.ts';
+import type { Transaction, MonthComparison } from '../../types/index.ts';
 
-function getMonthComparison(transactions, type) {
+function getMonthComparison(transactions: Transaction[], type: 'income' | 'expense'): MonthComparison {
   const months = [...new Set(transactions.map((t) => getYearMonth(t.date)))].sort();
   const cur = months[months.length - 1];
   const prev = months[months.length - 2];
@@ -26,7 +27,16 @@ function getMonthComparison(transactions, type) {
   return { change: Math.abs(pct).toFixed(1), direction: pct >= 0 ? 'up' : 'down' };
 }
 
-function SummaryCard({ variant, label, value, change, direction, icon: Icon }) {
+interface SummaryCardProps {
+  variant: 'balance' | 'income' | 'expense';
+  label: string;
+  value: number;
+  change?: number | string;
+  direction?: 'up' | 'down' | 'flat';
+  icon: LucideIcon;
+}
+
+function SummaryCard({ variant, label, value, change, direction, icon: Icon }: SummaryCardProps) {
   const isUp = direction === 'up';
   const ChangeIcon = isUp ? ArrowUpRight : ArrowDownRight;
   // For expenses, "up" is bad; for income/balance, "up" is good
@@ -50,7 +60,11 @@ function SummaryCard({ variant, label, value, change, direction, icon: Icon }) {
   );
 }
 
-export default function SummaryCards({ transactions }) {
+interface SummaryCardsProps {
+  transactions: Transaction[];
+}
+
+export default function SummaryCards({ transactions }: SummaryCardsProps) {
   const months = [...new Set(transactions.map((t) => getYearMonth(t.date)))].sort();
   const curMonth = months[months.length - 1];
 
